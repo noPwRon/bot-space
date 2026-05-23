@@ -1,0 +1,40 @@
+name: 6dof_bot
+dof: 6
+
+joints:
+  -
+    type: revolute
+    r:
+    d:
+    alpha:
+    theta:
+  -
+    type: prismatic
+    r:
+    d:
+    alpha:
+    theta:
+  -
+    type: revolute
+    r:
+    d:
+    alpha:
+    theta:
+  -
+    type: prismatic
+    r:
+    d:
+    alpha:
+    theta:
+  -
+    type: prismatic
+    r:
+    d:
+    alpha:
+    theta:
+  -
+    type:
+    r:
+    d:
+    alpha:
+    theta:

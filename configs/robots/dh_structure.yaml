@@ -1,0 +1,16 @@
+name: robo_name
+dof: # number
+
+joints:
+  - 
+    type: # revolute or prismatic
+    a:  #number
+    alpha:  # radians
+    d:  #number
+    theta:  # radians
+  - 
+    type: # revolute or prismatic
+    a:  #number
+    alpha:  # radians
+    d:  #number 
+    theta:  # radians
