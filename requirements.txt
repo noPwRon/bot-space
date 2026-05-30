@@ -1,2 +1,18 @@
 ipykernel
 python-dotenv
+
+# YAML config loading
+pyyaml
+
+# Numerical math and linear algebra
+numpy
+scipy
+
+# Symbolic math (Lagrangian mechanics, equations of motion)
+sympy
+
+# Visualization and animation
+matplotlib
+
+# File handling
+pathlib
