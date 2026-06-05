@@ -5,6 +5,10 @@ dof: 6
 # pi = 3.141592653589793
 # 3pi/2 = 4.71238898038469
 
+# TODO: add joint limits per joint (min_angle, max_angle in radians)
+
+home_position: [0, 0, 0, 0, 0, 0]  # one value per joint, in radians (revolute) or meters (prismatic)
+
 joints:
   -
     type: revolute

@@ -1,16 +1,24 @@
+# pi/2 = 1.5707963267948966
+# pi = 3.141592653589793
+# 3pi/2 = 4.71238898038469
+
 name: robo_name
-dof: # number
+dof: # number of joints
+
+# TODO: add joint limits per joint (min_angle, max_angle in radians)
+
+home_position: []  # one value per joint — radians (revolute) or meters (prismatic)
 
 joints:
-  - 
+  -
     type: # revolute or prismatic
-    a:  #number
-    alpha:  # radians
-    d:  #number
-    theta:  # radians
-  - 
+    a:     # link length (m)
+    alpha: # link twist (radians)
+    d:     # link offset (m) — joint variable if prismatic
+    theta: # joint angle (radians) — joint variable if revolute
+  -
     type: # revolute or prismatic
-    a:  #number
-    alpha:  # radians
-    d:  #number 
-    theta:  # radians
+    a:     # link length (m)
+    alpha: # link twist (radians)
+    d:     # link offset (m) — joint variable if prismatic
+    theta: # joint angle (radians) — joint variable if revolute
