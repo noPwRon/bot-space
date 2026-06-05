@@ -39,3 +39,4 @@ as a tutoring session. Assume no prior robotics knowledge and beginner-to-interm
 - Do not refactor or add features beyond what the user asks for.
 - Do not add implementation code to skeleton files without being asked.
 - When the user completes a section, suggest what to tackle next from instructions.md.
+- Always ensure design and logic suggestions adhere to the proposed structure in the reference notebooks (references/*.ipynb). If a suggestion contradicts a notebook, flag the conflict rather than quietly overriding it.

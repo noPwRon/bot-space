@@ -1,0 +1,44 @@
+# pi/2 = 1.5707963267948966
+# pi = 3.141592653589793
+# 3pi/2 = 4.71238898038469
+
+name: robo_name
+dof: # number of joints
+
+# TODO: add joint limits per joint (min_angle, max_angle in radians)
+
+home_position: []  # one value per joint — radians (revolute) or meters (prismatic)
+
+joints:
+  -
+    # DH parameters
+    type: # revolute or prismatic
+    a:     # link length (m)
+    alpha: # link twist (radians)
+    d:     # link offset (m) — joint variable if prismatic
+    theta: # joint angle (radians) — joint variable if revolute
+    # Physical properties
+    mass:           # link mass (kg)
+    length:         # link length along its primary axis (m)
+    geometry:       # shape primitive: cylinder, box, hollow_cylinder
+    radius:         # outer radius (m) — cylinder and hollow_cylinder
+    inner_radius:   # inner radius (m) — hollow_cylinder only
+    width:          # (m) — box only
+    height:         # (m) — box only
+    # center_of_mass and inertia tensor are computed automatically by src/geometry/inertia_tensor.py
+  -
+    # DH parameters
+    type: # revolute or prismatic
+    a:     # link length (m)
+    alpha: # link twist (radians)
+    d:     # link offset (m) — joint variable if prismatic
+    theta: # joint angle (radians) — joint variable if revolute
+    # Physical properties
+    mass:           # link mass (kg)
+    length:         # link length along its primary axis (m)
+    geometry:       # shape primitive: cylinder, box, hollow_cylinder
+    radius:         # outer radius (m) — cylinder and hollow_cylinder
+    inner_radius:   # inner radius (m) — hollow_cylinder only
+    width:          # (m) — box only
+    height:         # (m) — box only
+    # center_of_mass and inertia tensor are computed automatically by src/geometry/inertia_tensor.py
