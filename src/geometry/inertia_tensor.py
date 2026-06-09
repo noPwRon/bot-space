@@ -24,7 +24,6 @@ def inertia_box(m, w, h, L):
     return smp.diag(Ixx,Iyy,Izz)
     
 
-
 def get_center_of_mass(joint):
     # Returns the CoM position as a sympy Matrix [0, 0, L/2] in the joint frame.
     # Assumes mass is uniformly distributed along the primary (z) axis.
