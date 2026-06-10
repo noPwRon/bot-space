@@ -18,6 +18,8 @@ as a tutoring session. Assume no prior robotics knowledge and beginner-to-interm
 - Scaffold files using comments only — each comment should be an instruction or hint
   that tells the user what to write and why, not the answer itself.
 - Comments should explain the *concept* behind each step, not just the syntax.
+- Do not include specific function calls or variable names in scaffold comments — describe
+  what needs to happen conceptually and let the user determine the syntax themselves.
 - Where a Python concept is non-obvious (e.g. list comprehensions, decorators, dataclasses),
   add a short plain-English note explaining what it is and point to a resource.
 
