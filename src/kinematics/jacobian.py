@@ -5,7 +5,7 @@ from src.geometry.inertia_tensor import get_center_of_mass
 # Reference: Lynch & Park, Modern Robotics, Ch. 5.1
 
 
-def jacobian_column_revolute(T_end, T_prev):
+def build_jacobian_column_revolute(T_end, T_prev):
     # Returns a single 6x1 column of the Jacobian for a revolute joint.
     # T_prev is the cumulative transform to the previous joint (gives z-axis and origin).
     # T_end is a 4x4 matrix whose position column [:3, 3] is the target point (e.g. CoM).
@@ -17,7 +17,7 @@ def jacobian_column_revolute(T_end, T_prev):
     return smp.Matrix([linear, angular])
 
 
-def jacobian_column_prismatic(T_prev):
+def build_jacobian_column_prismatic(T_prev):
     # Returns a single 6x1 column of the Jacobian for a prismatic joint.
     # Prismatic joints slide along z_{j-1} so there is no angular contribution.
     z = T_prev[:3, 2]
@@ -26,7 +26,7 @@ def jacobian_column_prismatic(T_prev):
     return smp.Matrix([linear, angular])
 
 
-def link_jacobian(T_list, joints, link_index):
+def build_link_jacobian(T_list, joints, link_index):
     # Builds the full 6×n Jacobian for link `link_index`, with the CoM as the reference point.
     # Called once per link by dynamics.py to build the mass matrix.
     # T_list is the output of build_cumulative_transforms() from forward_kinematics.py.
@@ -39,7 +39,7 @@ def link_jacobian(T_list, joints, link_index):
     l_com = get_center_of_mass(joints[link_index])
     p_com = T_list[link_index] * l_com.col_join(smp.Matrix([1]))
 
-    for j, J in enumerate(joints):
+    for j, joint in enumerate(joints):
         # For joint 0 there is no previous transform, so use the identity (base frame).
         if j == 0:
             T_prev = smp.eye(4)
@@ -47,14 +47,14 @@ def link_jacobian(T_list, joints, link_index):
             T_prev = T_list[j-1]
 
         if j <= link_index:
-            if J["type"] == "revolute":
+            if joint["type"] == "revolute":
                 # jacobian_column_revolute reads the target position from T_end[:3, 3].
                 # Copy the cumulative transform and substitute p_com as the position column.
                 T_end = T_list[link_index].copy()
                 T_end[:3,3] = p_com[:3,:]
-                jacob_stack.append(jacobian_column_revolute(T_end, T_prev))
-            elif J["type"] == "prismatic":
-                jacob_stack.append(jacobian_column_prismatic(T_prev))
+                jacob_stack.append(build_jacobian_column_revolute(T_end, T_prev))
+            elif joint["type"] == "prismatic":
+                jacob_stack.append(build_jacobian_column_prismatic(T_prev))
         else:
             # Joints beyond link_index cannot affect this link — column is zero.
             jacob_stack.append(smp.zeros(6, 1))

@@ -4,7 +4,7 @@ import sympy as smp
 # Reference: Craig, Introduction to Robotics, Ch. 3.5
 
 
-def build_big_T(T):
+def build_end_effector_T(T):
     # Returns ^0T_n by sequentially multiplying all joint T matrices left to right.
     # Result[:3, 3] is end-effector position; result[:3, :3] is end-effector orientation.
     big_T = smp.eye(4)

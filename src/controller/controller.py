@@ -3,24 +3,45 @@ import sympy as smp
 from src.kinematics.dh_table import load_robot
 from src.kinematics.transforms import build_T_matrices
 from src.kinematics.forward_kinematics import build_cumulative_transforms
-from src.dynamics.lagrangian import mass_matrix, potential_energy, gravity_vector, coriolis_matrix
+from src.dynamics.lagrangian import build_mass_matrix, build_potential_energy, build_gravity_vector, build_coriolis_matrix
 
 # The controller is the entry point for the simulator.
 # It loads the robot config, sets up symbolic variables, and orchestrates the dynamics pipeline.
 
 
-def build_symbolic_joints(data, theta_syms):
-    # Returns a copy of the joints list with symbolic variables substituted in for joint angles.
-    # Revolute joints use theta_syms; prismatic joints use d_syms.
-    # This is needed because build_T_matrices uses raw YAML values by default.
-    #
-    # For each joint, replace the appropriate DH parameter with its symbolic counterpart.
-    # Use joint["type"] to decide whether to substitute theta or d.
-    # Return a new list — do not modify the original data.
-    pass
+def build_symbolic_joints(joints, theta_syms):
+    # Takes the raw joints list and a list of SymPy symbols (one per joint).
+    # Returns a new joints list where each joint's variable parameter (theta for
+    # revolute, d for prismatic) has been replaced with its corresponding symbol.
+    # The original joints list is not modified.
+    joint_list = []
+    for j, joint in enumerate(joints):
 
+        if joint["type"] == "revolute":
+            theta_sym = theta_syms[j]
+            joint_list.append(joints[j].copy())
+            joint_list[j]["theta"] = theta_sym
+        if joint["type"] == "prismatic":
+            d_sym = theta_syms[j]
+            joint_list.append(joints[j].copy())
+            joint_list[j]["d"] = d_sym
+    return joint_list
+    
+def build_theta_syms(joints):
+    # Takes the raw joints list and returns a list of SymPy symbols, one per joint.
+    # Revolute joints get a theta symbol; prismatic joints get a d symbol.
+    # The order matches the joint order so index i in the result corresponds to joint i.
+    theta_syms = []
+    for j, joint in enumerate(joints):
+        if joint["type"] == "revolute":
+            theta_sym = smp.Symbol(f'theta{j}')
+            theta_syms.append(theta_sym)
+        if joint["type"] == "prismatic":
+            d_sym = smp.Symbol(f'd{j}') 
+            theta_syms.append(d_sym)
+    return theta_syms
 
-def setup(robot_name):
+def build_simulation(robot_name):
     # Loads the robot config and builds all symbolic structures needed for dynamics.
     # Returns everything the simulation and solver will need.
     #

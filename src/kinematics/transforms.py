@@ -4,7 +4,7 @@ import sympy as smp
 # Reference: CMU 16-311 Lecture 16b — https://www.cs.cmu.edu/~16311/f05/lecture/lec16b.html
 
 
-def dh_matrix(a, alpha, d, theta):
+def build_dh_matrix(a, alpha, d, theta):
     # Returns the 4x4 modified DH transformation matrix ^(i-1)T_i for one joint.
     return smp.Matrix([
         [smp.cos(theta),                -smp.sin(theta),                 0,              a],
@@ -14,12 +14,10 @@ def dh_matrix(a, alpha, d, theta):
     ])
 
 
-def build_T_matrices(data):
-    # Returns a list of symbolic T matrices, one per joint, using fixed YAML values.
-    # When symbolic joint variables are needed, the controller passes
-    # joint["theta"] + theta_symbol (revolute) or joint["d"] + d_symbol (prismatic)
-    # in place of the raw YAML value, using joint["type"] to determine which.
+def build_T_matrices(joints):
+    # Returns a list of symbolic T matrices, one per joint.
+    # Accepts a joints list directly — pass data["joints"] or the output of build_symbolic_joints.
     T = []
-    for joint in data["joints"]:
-        T.append(dh_matrix(joint["a"], joint["alpha"], joint["d"], joint["theta"]))
+    for joint in joints:
+        T.append(build_dh_matrix(joint["a"], joint["alpha"], joint["d"], joint["theta"]))
     return T
