@@ -17,9 +17,6 @@ def build_cumulative_transforms(T):
     # Returns a list of n cumulative transforms [^0T_1, ^0T_2, ..., ^0T_n].
     # Index k of the result is the transform from the base frame to link k+1.
     # This is needed any time you want the pose of an intermediate link, not just the end-effector.
-    #
-    # Hint: this is very similar to build_big_T, but instead of returning only the final product,
-    # append the running product to a list after each multiplication.
     step_T = smp.eye(4)
     cum_T = []
     for joint in T:

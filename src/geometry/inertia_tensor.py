@@ -25,14 +25,12 @@ def build_inertia_box(m, w, h, L):
     
 
 def get_center_of_mass(joint):
-    # Returns the CoM position as a sympy Matrix [0, 0, L/2] in the joint frame.
-    # Assumes mass is uniformly distributed along the primary (z) axis.
+    # Returns the CoM position as a 3x1 vector [0, 0, L/2] in the joint's local frame.
+    # Assumes mass is uniformly distributed along the z-axis of the link.
+    # The T matrix already handles the d translation for prismatic joints, so the CoM
+    # in the local frame is always L/2 regardless of joint type.
     L = joint["length"]
-    if joint["type"] == "prismatic":
-        offset = joint["d"]
-        return smp.Matrix([0,0,smp.Rational(1,2) *(L + offset)])
-    else:
-        return smp.Matrix([0, 0, smp.Rational(1, 2) * L])
+    return smp.Matrix([0, 0, smp.Rational(1, 2) * L])
 
 
 def get_inertia(joint):

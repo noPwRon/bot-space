@@ -28,7 +28,7 @@ def build_jacobian_column_prismatic(T_prev):
 
 def build_link_jacobian(T_list, joints, link_index):
     # Builds the full 6×n Jacobian for link `link_index`, with the CoM as the reference point.
-    # Called once per link by dynamics.py to build the mass matrix.
+    # Called once per link by lagrangian.py to build the mass matrix.
     # T_list is the output of build_cumulative_transforms() from forward_kinematics.py.
     # joints is data["joints"] from the YAML loader.
 
