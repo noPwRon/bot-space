@@ -34,7 +34,6 @@ def state_derivative(numerical_funcs, state, tau):
 
     theta_ddot = np.linalg.solve(
         M_func(theta),
-        tau - np.matmul(C_func(theta, theta_dot), theta_dot) - g_vec
-    )
+        tau - np.matmul(C_func(theta, theta_dot), theta_dot) - g_vec)
 
     return np.concatenate([theta_dot, theta_ddot])

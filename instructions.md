@@ -7,6 +7,11 @@ Build a robot simulator that:
 3. Derives equations of motion using Lagrangian mechanics
 4. Numerically integrates the equations of motion to simulate robot movement
 5. Visualizes the robot's motion over time
+6. Solves inverse kinematics to follow a given end-effector path
+7. Generates paths from real-world scenarios or mathematical functions (e.g. circles, spirals)
+8. Outputs simulation graphs — torque, position, velocity, and other quantities over time
+9. Supports real-world load scenarios (e.g. picking up and moving a block)
+10. Assists with motor sizing by reporting peak joint torques from a simulation
 
 ---
 
@@ -77,20 +82,72 @@ Plotting and animating the robot's motion.
 | Matplotlib basics | https://matplotlib.org/stable/tutorials/index.html |
 | Matplotlib 3D animation | https://matplotlib.org/stable/gallery/animation/index.html |
 
+### Stage 7 — Inverse Kinematics
+Given a desired end-effector position, solve for the joint angles that achieve it.
+
+| Topic | Resource |
+|---|---|
+| Inverse kinematics overview | "Introduction to Robotics" — Craig, Ch. 4 |
+| Jacobian-based IK (numerical) | "Robot Modeling and Control" — Spong, Ch. 6 |
+| scipy.optimize for numerical IK | https://docs.scipy.org/doc/scipy/reference/optimize.html |
+
+**Key concepts to understand before coding:**
+- The difference between analytical IK (closed-form equations) and numerical IK (iterative solvers)
+- The Jacobian pseudo-inverse method for redundant robots
+- Singularities — configurations where IK has no unique solution
+
+### Stage 8 — Path Generation
+Defining end-effector trajectories in Cartesian space.
+
+| Topic | Resource |
+|---|---|
+| Trajectory planning | "Introduction to Robotics" — Craig, Ch. 7 |
+| Parametric curves (circles, spirals) | https://mathworld.wolfram.com/ParametricEquations.html |
+
+**Key concepts:**
+- A path is a sequence of end-effector poses in 3D space
+- IK converts each pose in the path into joint angles
+- The simulator then drives the robot along those joint angle sequences
+
+### Stage 9 — Simulation Output and Analysis
+Extracting and plotting meaningful data from simulation results.
+
+| Topic | Resource |
+|---|---|
+| Matplotlib subplots | https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html |
+
+**Quantities to plot:**
+- Joint angles (position) over time
+- Joint velocities over time
+- Joint torques over time — computed from the equations of motion
+- End-effector position over time (extracted from forward kinematics at each timestep)
+
+### Stage 10 — Real-World Scenarios
+Extending the simulator to handle external loads and practical use cases.
+
+**Key additions:**
+- External force/torque at the end-effector (e.g. holding a block) — adds a term to the equations of motion
+- Motor sizing — run a task simulation and report peak torque per joint
+- Pick-and-place — combine a path, IK, and a load change mid-simulation
+
 ---
 
 ## File Roadmap
 Work through the files roughly in this order:
 
-1. `configs/robots/example_6dof.yaml` — define your first DH table by hand
-2. `src/kinematics/dh_table.py` — load and validate the YAML DH table
-3. `src/kinematics/transforms.py` — build T matrices and chain them (forward kinematics)
-4. `src/dynamics/lagrangian.py` — symbolic kinetic and potential energy
-5. `src/dynamics/solver.py` — derive and solve equations of motion
-6. `src/simulation/simulator.py` — numerical integration loop
-7. `src/visualization/renderer.py` — plot and animate results
-8. `tests/test_kinematics.py` — verify your transforms are correct
-9. `tests/test_dynamics.py` — verify your equations of motion
+1. `configs/robots/example_6dof.yaml` — define your first DH table by hand ✓
+2. `src/kinematics/dh_table.py` — load and validate the YAML DH table ✓
+3. `src/kinematics/transforms.py` — build T matrices and chain them (forward kinematics) ✓
+4. `src/dynamics/lagrangian.py` — symbolic kinetic and potential energy ✓
+5. `src/dynamics/solver.py` — derive and solve equations of motion ✓
+6. `src/simulation/simulator.py` — numerical integration loop ✓
+7. `src/visualization/renderer.py` — plot and animate results ✓
+8. `tests/test_kinematics.py` — verify your transforms are correct ✓
+9. `tests/test_dynamics.py` — verify your equations of motion ✓
+10. `src/kinematics/inverse_kinematics.py` — solve for joint angles given an end-effector pose
+11. `src/planning/path_generator.py` — generate end-effector paths (lines, circles, custom)
+12. `src/visualization/plotter.py` — plot torque, position, velocity over time
+13. `src/simulation/scenarios.py` — real-world scenarios (pick and place, external loads)
 
 ---
 

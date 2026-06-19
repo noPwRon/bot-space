@@ -1,8 +1,7 @@
 import sympy as smp
 
 from src.kinematics.dh_table import load_robot
-from src.kinematics.transforms import build_T_matrices
-from src.kinematics.forward_kinematics import build_cumulative_transforms
+from src.kinematics.transforms import build_T_matrices, build_cumulative_transforms, build_end_effector_T
 from src.dynamics.lagrangian import build_mass_matrix, build_potential_energy, build_gravity_vector, build_coriolis_matrix
 
 # The controller is the entry point for the simulator.
@@ -40,6 +39,16 @@ def build_theta_dot_syms(joints):
     return theta_dot_syms
 
 
+def make_forward_kin_fn(joints):
+    # Returns a closure that computes the numerical end-effector T matrix for a given theta array.
+    # Captures the fixed joint structure so callers only need to pass joint angles.
+    def forward_kin_fn(theta):
+        joint_list = build_numerical_joints(joints, theta)
+        T_list = build_T_matrices(joint_list)
+        return build_end_effector_T(T_list)
+    return forward_kin_fn
+
+
 def build_symbolic_joints(joints, theta_syms):
     # Injects the position symbols into the DH parameter table.
     # Each joint dictionary is copied so the original YAML data is not mutated.
@@ -55,6 +64,22 @@ def build_symbolic_joints(joints, theta_syms):
             d_sym = theta_syms[j]
             joint_list.append(joints[j].copy())
             joint_list[j]["d"] += d_sym
+    return joint_list
+
+def build_numerical_joints(joints, theta_nums):
+    # Substitutes numerical joint angle values into the DH parameter table.
+    # Each joint dictionary is copied so the original data is not mutated.
+    # theta_nums is an array of values, one per joint, in the same order as joints.
+    joint_list = []
+    for j, joint in enumerate(joints):
+        if joint["type"] == "revolute":
+            theta_num = theta_nums[j]
+            joint_list.append(joints[j].copy())
+            joint_list[j]["theta"] = theta_num
+        if joint["type"] == "prismatic":
+            d_num = theta_nums[j]
+            joint_list.append(joints[j].copy())
+            joint_list[j]["d"] = d_num
     return joint_list
 
 
@@ -90,6 +115,4 @@ def build_simulation(robot_name):
     C = build_coriolis_matrix(M, theta_syms, theta_dot_syms)
 
     # Step 6: return all symbolic quantities for use by the solver and simulator.
-    return M, V, C, g, theta_syms, theta_dot_syms
-
-
+    return M, C, g, theta_syms, theta_dot_syms

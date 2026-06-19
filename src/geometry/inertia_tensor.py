@@ -9,6 +9,7 @@ def build_inertia_cylinder(m, r, L):
     Izz = smp.Rational(1,2)*m*r**2
     return smp.diag(Ixx,Iyy,Izz)
 
+
 def build_inertia_hollow_cylinder(m, r_outer, r_inner, L):
     # Hollow cylinder (tube), symmetry axis along z.
     Ixx = Iyy = smp.Rational(1,12)*m*(3*(r_outer**2 + r_inner**2) + L**2)
@@ -22,7 +23,7 @@ def build_inertia_box(m, w, h, L):
     Iyy = smp.Rational(1,12)*m*(w**2 + L**2)
     Izz = smp.Rational(1,12)*m*(w**2 + h**2)
     return smp.diag(Ixx,Iyy,Izz)
-    
+
 
 def get_center_of_mass(joint):
     # Returns the CoM position as a 3x1 vector [0, 0, L/2] in the joint's local frame.

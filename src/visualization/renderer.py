@@ -1,7 +1,7 @@
 # Reference: Matplotlib 3D axes — https://matplotlib.org/stable/tutorials/toolkits/mplot3d.html
 # Reference: FuncAnimation — https://matplotlib.org/stable/api/_as_gen/matplotlib.animation.FuncAnimation.html
 
-from src.kinematics.transforms import build_T_matrices
+from src.kinematics.transforms import build_T_matrices, build_cumulative_transforms
 from src.kinematics.dh_table import load_robot
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -9,11 +9,16 @@ import numpy as np
 import copy
 
 
-def get_joint_positions(T_matrices):
+def get_joint_positions(T_mat):
     """Returns a list of [x, y, z] positions, one per joint, extracted from T matrices."""
+    # build_cumulative_transforms multiplies T matrices left-to-right so each position
+    # is in the base frame, not relative to the previous joint.
+    T_cum = build_cumulative_transforms(T_mat)
+
     joint_positions = []
-    for mat in T_matrices:
-        joint_positions.append(mat[:3, 3])
+    for T in T_cum:
+        joint_positions.append(T[:3, 3])
+
     return joint_positions
 
 
@@ -62,9 +67,13 @@ def build_animation(robot_name, t, y):
         T_matrices = build_T_matrices(modified_joint_dh)
         joint_positions = get_joint_positions(T_matrices)
 
+        # Prepend the base origin [0, 0, 0] so the first link is drawn from the base.
         xs = [pos[0] for pos in joint_positions]
         ys = [pos[1] for pos in joint_positions]
         zs = [pos[2] for pos in joint_positions]
+        xs.insert(0, 0)
+        ys.insert(0, 0)
+        zs.insert(0, 0)
 
         line.set_data(xs, ys)
         line.set_data_3d(xs, ys, zs)

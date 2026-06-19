@@ -34,7 +34,7 @@ def run_simulation(robot_name, initial_angles, initial_velocities, t_span, tau, 
     """
 
     # Build symbolic M, C, g matrices and the joint symbol lists.
-    M, V, C, g, theta_syms, theta_dot_syms = build_simulation(robot_name)
+    M, C, g, theta_syms, theta_dot_syms = build_simulation(robot_name)
 
     # Lambdify converts SymPy expressions into fast NumPy-callable functions.
     M_Func, C_Func, g_Func = build_numerical_funcs(M, C, g, theta_syms, theta_dot_syms)

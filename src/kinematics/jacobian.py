@@ -12,9 +12,9 @@ def build_jacobian_column_revolute(T_end, T_prev):
     z = T_prev[:3, 2]
     p_end = T_end[:3, 3]
     p_prev = T_prev[:3, 3]
-    linear = smp.cross(z, p_end - p_prev)
+    linear = z.cross(p_end - p_prev)
     angular = z
-    return smp.Matrix([linear, angular])
+    return linear.col_join(angular)
 
 
 def build_jacobian_column_prismatic(T_prev):
@@ -22,8 +22,8 @@ def build_jacobian_column_prismatic(T_prev):
     # Prismatic joints slide along z_{j-1} so there is no angular contribution.
     z = T_prev[:3, 2]
     linear = z
-    angular = smp.zeros(3)
-    return smp.Matrix([linear, angular])
+    angular = smp.zeros(3, 1)
+    return linear.col_join(angular)
 
 
 def build_link_jacobian(T_list, joints, link_index):
@@ -61,7 +61,3 @@ def build_link_jacobian(T_list, joints, link_index):
 
     # hstack joins a list of 6x1 columns into a single 6×n matrix.
     return smp.Matrix.hstack(*jacob_stack)
-
-
-
-    
