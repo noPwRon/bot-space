@@ -5,14 +5,10 @@ import numpy as np
 from sympy import pi
 from src.kinematics.transforms import build_dh_matrix, build_T_matrices
 from src.kinematics.inverse_kinematics import ik_newton_raphson
+from src.kinematics.jacobian import build_end_effector_jacobian
+from src.controller.controller import make_forward_kin_fn, make_jacobian_fn, numbify
+from tests.conftest import assert_close
 
-
-def numbify(sym_result):
-    return np.array(sym_result.evalf(), dtype=float)
-
-
-def assert_close(num_result, expected_result):
-    assert np.allclose(num_result, expected_result)
 
 
 # --- Test 1: identity transform ---
@@ -68,9 +64,20 @@ def test_twoJoint():
 
 def test_ikSolution(joint_build):
     joint, theta_syms, theta_dot_syms, T_cum = joint_build
+    
+
+    target_T = np.eye(4)
+    target_T[0,3] = 1
+
+    theta_init = np.array([0])
 
     # TODO: build forward_kin_fn using make_forward_kin_fn(joint)
+    forward_kin_fn = make_forward_kin_fn(joint)
     # TODO: build jacobian_fn — numerical Jacobian callable
+    jacobian_fn = make_jacobian_fn(joint)
     # TODO: call ik_newton_raphson with target_T, initial offset theta, forward_kin_fn, jacobian_fn
+    new_theta = ik_newton_raphson(target_T, theta_init, forward_kin_fn,jacobian_fn)
     # TODO: assert returned theta is close to 0
+    assert_close(new_theta, 0)
+
 
