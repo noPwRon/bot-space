@@ -62,6 +62,7 @@ def build_link_jacobian(T_list, joints, link_index):
     # hstack joins a list of 6x1 columns into a single 6×n matrix.
     return smp.Matrix.hstack(*jacob_stack)
 
+
 def build_end_effector_jacobian(T_cum, joints):
     end_effector_jacobian = build_link_jacobian(T_cum, joints, len(joints)-1)
     return end_effector_jacobian

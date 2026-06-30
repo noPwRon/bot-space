@@ -10,11 +10,12 @@ from src.dynamics.lagrangian import build_mass_matrix, build_potential_energy, b
 from src.kinematics.jacobian import build_end_effector_jacobian
 
 
-def numbify(sym_result):
-    return np.array(sym_result.evalf(), dtype=float)
-
 # The controller is the entry point for the simulator.
 # It loads the robot config, sets up symbolic variables, and orchestrates the dynamics pipeline.
+
+
+def numbify(sym_result):
+    return np.array(sym_result.evalf(), dtype=float)
 
 
 def build_theta_syms(joints):
@@ -57,15 +58,14 @@ def make_forward_kin_fn(joints):
         return numbify(build_end_effector_T(T_list))
     return forward_kin_fn
 
-def make_jacobian_fn(joints):
 
+def make_jacobian_fn(joints):
     def jacobian_fn(theta):
         joint_list = build_numerical_joints(joints, theta)
         T_list = build_T_matrices(joint_list)
         T_cum = build_cumulative_transforms(T_list)
-        return numbify(build_end_effector_jacobian(T_cum,joints))
+        return numbify(build_end_effector_jacobian(T_cum, joints))
     return jacobian_fn
-
 
 
 def build_symbolic_joints(joints, theta_syms):
@@ -126,7 +126,7 @@ def build_simulation(robot_name):
     # This skips all the symbolic computation below.
 
     cache_dir = Path("cache")
-    cache_file = cache_dir / robot_name + "_" + file_hash + ".pkl"
+    cache_file = cache_dir / f"{robot_name}_{file_hash}.pkl"
 
 
     # Step 4: create symbolic placeholders for joint positions and velocities.

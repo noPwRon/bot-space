@@ -37,7 +37,7 @@ def build_animation(robot_name, t, y):
     FuncAnimation object (call plt.show() to display it)
     """
 
-    robot = load_robot(robot_name=robot_name)
+    robot, _ = load_robot(robot_name=robot_name)
     n = y.shape[0] // 2
 
     robot_fig = plt.figure()
