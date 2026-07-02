@@ -1,5 +1,6 @@
 from src.dynamics.lagrangian import build_mass_matrix, build_coriolis_matrix, build_potential_energy, build_gravity_vector
 import numpy as np
+from src.controller.controller import numbify
 
 
 def test_massMatrix(joint_build):
@@ -23,8 +24,10 @@ def test_coriolisMatrix(joint_build):
     C = build_coriolis_matrix(M,theta_syms,theta_dot_syms)
 
     C_0 = C.subs(theta_dot_syms[0],0)
-
-    assert np.allclose(C_0, np.array([0]))
+    
+    C_num = numbify(C_0)
+    
+    assert np.allclose(C_num, np.array([0]))
 
 def test_gVec(joint_build):
 
@@ -36,7 +39,9 @@ def test_gVec(joint_build):
 
     g_vec_0 = g_vec.subs(theta_syms[0],0)
     
-    assert np.allclose(g_vec_0, np.array([0]))
+    g_vec_0_num = numbify(g_vec_0)
+    
+    assert np.allclose(g_vec_0_num, np.array([0]))
 
 
 

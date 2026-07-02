@@ -69,15 +69,20 @@ def test_ikSolution(joint_build):
     target_T = np.eye(4)
     target_T[0,3] = 1
 
-    theta_init = np.array([0])
+    theta_init = np.array([1])
 
-    # TODO: build forward_kin_fn using make_forward_kin_fn(joint)
+
     forward_kin_fn = make_forward_kin_fn(joint)
-    # TODO: build jacobian_fn — numerical Jacobian callable
     jacobian_fn = make_jacobian_fn(joint)
-    # TODO: call ik_newton_raphson with target_T, initial offset theta, forward_kin_fn, jacobian_fn
+    
+    
+    print(forward_kin_fn(np.array([0.0])))
+    print(forward_kin_fn(np.array([0.05])))
+    print(jacobian_fn(np.array([0.0])))
+    print(jacobian_fn(np.array([0.5])))
     new_theta = ik_newton_raphson(target_T, theta_init, forward_kin_fn,jacobian_fn)
-    # TODO: assert returned theta is close to 0
+    
+    # print(new_theta)
     assert_close(new_theta, 0)
 
 
