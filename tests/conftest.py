@@ -5,7 +5,10 @@ import numpy as np
 
 @pytest.fixture
 def joint_build():
-    joint = [{"type": "revolute", "a": 1, "alpha": 0, "d": 0, "theta": 0, "mass": 1, "length": 1, "geometry": "box", "width": 1, "height": 1}]
+    joint = [
+        {"type": "revolute", "a": 1, "alpha": 0, "d": 0, "theta": 0, "mass": 1, "length": 1, "geometry": "box", "width": 1, "height": 1},
+        {"type": "revolute", "a": 1, "alpha": 0, "d": 0, "theta": 0, "mass": 1, "length": 1, "geometry": "box", "width": 1, "height": 1},
+    ]
     theta_syms = build_theta_syms(joint)
     theta_dot_syms = build_theta_dot_syms(joint)
     T = build_T_matrices(joint)

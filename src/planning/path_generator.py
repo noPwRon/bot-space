@@ -20,6 +20,17 @@ def make_function(fx, fy, fz):
     T[:3, 3] = [fx, fy, fz]
     return T
 
+def make_unit_vec(normal):
+    norm_vec = [1,0,0]
+    if (1- np.abs(np.dot(normal,norm_vec))) < 1e-6:
+        norm_vec = [0,1,0]
+        
+    u = np.cross(normal,norm_vec)
+    v = np.cross(normal,u)
+    
+    u_unit = u / np.linalg.norm(u)
+    v_unit = v / np.linalg.norm(v)
+    return u_unit, v_unit
 
 # --- Section 1: Sampler ---
 
@@ -27,6 +38,9 @@ def sample_path(path_fn, n_steps):
     # Call path_fn at n_steps evenly spaced values of t between 0 and 1.
     # Return the results as a list of 4x4 numpy arrays.
     # Hint: numpy has a function that generates evenly spaced values over an interval.
+    # TODO: check that n_steps is at least 1.
+    # Zero or negative steps would produce an empty or nonsensical linspace.
+    # Raise a ValueError with a message stating the minimum.
 
     t = np.linspace(0,1,n_steps)
     t_list = []
@@ -54,6 +68,9 @@ def make_spline_path(waypoints):
     # Note: a Python function defined inside another function can "remember" variables
     # from the outer scope — this is called a closure. Look up "Python closures" if unfamiliar.
 
+    # TODO: check that waypoints contains at least 2 points before proceeding.
+    # CubicSpline requires a minimum of 2 data points; fewer will produce a confusing scipy error.
+    # Raise a ValueError with a message that states the requirement clearly.
     t_points = np.linspace(0,1, len(waypoints))
 
     x_points = [wp[0] for wp in waypoints]
@@ -82,6 +99,9 @@ def make_line_path(start, end):
     # Linear interpolation between two points: p(t) = start + t * (end - start)
     # Return a callable f(t) -> 4x4 pose matrix with identity orientation.
 
+    # TODO: check that start and end are both sequences of length 3 (x, y, z).
+    # Passing a 2D point or a scalar would cause a silent wrong result or an IndexError inside the closure.
+    # Raise a ValueError if either input does not have exactly 3 elements.
     def line_function(t):
         x = start[0] + t * (end[0] - start[0])
         y = start[1] + t * (end[1] - start[1])
@@ -101,7 +121,27 @@ def make_circle_path(center, radius, normal, start_angle=0):
     # Hint: to place a circle in an arbitrary plane defined by `normal`, you need two
     # orthogonal vectors that both lie in that plane — look up "basis vectors from normal".
     # Return a callable f(t) -> 4x4 pose matrix with identity orientation.
-    pass
+    # TODO: this function is not yet implemented.
+    # Raise NotImplementedError with a message so callers get a clear signal rather than None.
+    
+    # raise NotImplementedError("make_circle_path is not yet implemented. This function will generate a circular path based on the provided parameters.")
+
+    u_unit, v_unit = make_unit_vec(normal)
+    
+    def circle_function(t):
+        theta = t * 2*np.pi + start_angle   
+        p_theta = center + radius * ( np.cos(theta) * u_unit + np.sin(theta)* v_unit)
+        return make_function(p_theta[0],p_theta[1],p_theta[2])
+    
+    return circle_function
+        
+        
+    
+    
+    
+        
+    
+ 
 
 
 def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
@@ -113,7 +153,27 @@ def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
     # n_turns: how many full revolutions the spiral makes
     # Hint: combine the circle logic with a linearly growing radius and a climbing offset.
     # Return a callable f(t) -> 4x4 pose matrix with identity orientation.
-    pass
+    # TODO: this function is not yet implemented.
+    # Raise NotImplementedError with a message so callers get a clear signal rather than None.
+    
+    # raise NotImplementedError("make_spiral_path is not yet implemented. This function will generate a spiral path based on the provided parameters.")
+    
+    u_unit, v_unit = make_unit_vec(normal)
+    n_unit = normal / np.linalg.norm(normal)
+    
+    def spiral_function(t):
+        theta = t * 2*np.pi * n_turns
+        radius = radius_start + (radius_end - radius_start)*t
+        h = t * height * n_unit
+        
+        p_theta = center + radius*(u_unit*np.cos(theta) + v_unit*np.sin(theta)) + h
+        return make_function(p_theta[0],p_theta[1],p_theta[2])
+    
+    return spiral_function 
+        
+    
+    
+    
 
 
 # --- Section 4: Sensor path (mode 3 — stub for future implementation) ---
@@ -125,4 +185,8 @@ def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
 def make_sensor_path():
     # For now, raise NotImplementedError with a descriptive message.
     # When sensor input is available, this function will accept a sensor handle or callback.
+    # TODO: this function is not yet implemented.
+    # Raise NotImplementedError with a message so callers get a clear signal rather than None.
+    
+    raise NotImplementedError("make_sensor_path is not yet implemented. This function will generate a path based on real-time sensor input.")
     pass

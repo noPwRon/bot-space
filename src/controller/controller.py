@@ -64,7 +64,7 @@ def make_jacobian_fn(joints):
         joint_list = build_numerical_joints(joints, theta)
         T_list = build_T_matrices(joint_list)
         T_cum = build_cumulative_transforms(T_list)
-        return numbify(build_end_effector_jacobian(T_cum, joints))
+        return numbify(build_end_effector_jacobian(T_cum, joint_list))
     return jacobian_fn
 
 
@@ -73,6 +73,9 @@ def build_symbolic_joints(joints, theta_syms):
     # Each joint dictionary is copied so the original YAML data is not mutated.
     # After this step, the joints list contains SymPy symbols where the variable
     # DH parameter was — making every downstream T matrix a symbolic expression.
+    # TODO: check that len(theta_syms) == len(joints).
+    # A mismatch means some joints get no symbol or an index lookup fails silently.
+    # Raise a ValueError stating both lengths so the mismatch is easy to diagnose.
     joint_list = []
     for j, joint in enumerate(joints):
         if joint["type"] == "revolute":
@@ -89,6 +92,9 @@ def build_numerical_joints(joints, theta_nums):
     # Substitutes numerical joint angle values into the DH parameter table.
     # Each joint dictionary is copied so the original data is not mutated.
     # theta_nums is an array of values, one per joint, in the same order as joints.
+    # TODO: check that len(theta_nums) == len(joints).
+    # Too few values causes a silent skip; too many causes an IndexError inside the loop.
+    # Raise a ValueError stating both lengths so the mismatch is easy to diagnose.
     joint_list = []
     for j, joint in enumerate(joints):
         if joint["type"] == "revolute":

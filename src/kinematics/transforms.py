@@ -18,6 +18,9 @@ def build_dh_matrix(a, alpha, d, theta):
 def build_T_matrices(joints):
     # Returns a list of symbolic T matrices, one per joint.
     # Accepts a joints list directly — pass data["joints"] or the output of build_symbolic_joints.
+    # TODO: check that joints is not empty before proceeding.
+    # An empty list would silently return [], causing confusing failures downstream.
+    # Raise a ValueError with a message explaining the minimum requirement.
     T = []
     for joint in joints:
         T.append(build_dh_matrix(joint["a"], joint["alpha"], joint["d"], joint["theta"]))
@@ -27,6 +30,9 @@ def build_T_matrices(joints):
 def build_end_effector_T(T):
     # Returns ^0T_n by sequentially multiplying all joint T matrices left to right.
     # result[:3, 3] is end-effector position; result[:3, :3] is end-effector orientation.
+    # TODO: check that T is not empty.
+    # An empty list produces a silent identity result — no transform applied — which is wrong.
+    # Raise a ValueError explaining that at least one joint transform is required.
     big_T = smp.eye(4)
     for joint in T:
         big_T = big_T * joint

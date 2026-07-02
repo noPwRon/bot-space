@@ -67,22 +67,16 @@ def test_ikSolution(joint_build):
     
 
     target_T = np.eye(4)
-    target_T[0,3] = 1
+    target_T[0,3] = 2
 
-    theta_init = np.array([1])
+    theta_init = np.array([1,1])
 
 
     forward_kin_fn = make_forward_kin_fn(joint)
     jacobian_fn = make_jacobian_fn(joint)
-    
-    
-    print(forward_kin_fn(np.array([0.0])))
-    print(forward_kin_fn(np.array([0.05])))
-    print(jacobian_fn(np.array([0.0])))
-    print(jacobian_fn(np.array([0.5])))
     new_theta = ik_newton_raphson(target_T, theta_init, forward_kin_fn,jacobian_fn)
     
     # print(new_theta)
-    assert_close(new_theta, 0)
+    assert_close(forward_kin_fn(new_theta)[:3,3], np.array([2,0,0]))
 
 

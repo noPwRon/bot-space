@@ -31,6 +31,12 @@ def build_link_jacobian(T_list, joints, link_index):
     # Called once per link by lagrangian.py to build the mass matrix.
     # T_list is the output of build_cumulative_transforms() from forward_kinematics.py.
     # joints is data["joints"] from the YAML loader.
+    # TODO: check that link_index is a valid index into T_list (i.e. 0 <= link_index < len(T_list)).
+    # An out-of-range index raises a confusing SymPy or list error far from the source.
+    # Raise an IndexError or ValueError with a message showing the index and the valid range.
+    # TODO: inside the joint loop, handle the case where joint["type"] is neither
+    # "revolute" nor "prismatic" — currently it silently appends a zero column.
+    # Raise a ValueError identifying the joint index and the unrecognised type.
 
     jacob_stack = []
 
