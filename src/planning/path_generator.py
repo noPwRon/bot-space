@@ -65,11 +65,8 @@ def make_spline_path(waypoints):
     fy = CubicSpline(t_points, y_points)
     fz = CubicSpline(t_points, z_points)
 
-    # TODO: make_function is called once here at definition time, not wrapped in a closure.
-    # This means spline_function ends up as a T matrix (the result), not a callable.
-    # Fix: define a def f(t): that evaluates fx(t), fy(t), fz(t) and calls make_function
-    # with those three float values. Return f, not the result of calling make_function.
-    spline_function = make_function(fx, fy, fz, t)
+    def spline_function(t):
+        return make_function(fx(t), fy(t), fz(t))
 
     return spline_function
 
@@ -85,16 +82,11 @@ def make_line_path(start, end):
     # Linear interpolation between two points: p(t) = start + t * (end - start)
     # Return a callable f(t) -> 4x4 pose matrix with identity orientation.
 
-    x_points = [start[0], end[0]]
-    y_points = [start[1], end[1]]
-    z_points = [start[2], end[2]]
-    t = [0,1]
-
-    # TODO: fx, fy, fz are not defined — x_points/y_points/z_points were extracted but never used.
-    # For a line you don't need CubicSpline at all. The hint says: p(t) = start + t * (end - start).
-    # Fix: define a def f(t): that computes x, y, z directly from that formula using start and end,
-    # then calls make_function(x, y, z). The x_points/y_points/z_points lists can be removed entirely.
-    line_function = make_function(fx, fy, fz, t)
+    def line_function(t):
+        x = start[0] + t * (end[0] - start[0])
+        y = start[1] + t * (end[1] - start[1])
+        z = start[2] + t * (end[2] - start[2])
+        return make_function(x, y, z)
 
     return line_function
 
