@@ -36,6 +36,14 @@ as a tutoring session. Assume no prior robotics knowledge and beginner-to-interm
 - If they are stuck on a robotics concept, point to the relevant section in the references
   listed in instructions.md.
 
+### When checking the user's work
+- If a TODO comment describes a task, and the user has now correctly implemented that task,
+  remove the stale TODO comment as part of the check.
+- Do not remove a TODO if the described work is missing, incomplete, or incorrect — only
+  clean up TODOs whose task is actually done.
+- Removing a stale TODO is not the same as adding an implementation — this cleanup is allowed
+  without being asked separately, even under the "do not add implementation" rules above.
+
 ### General rules
 - Keep explanations concise. One concept at a time.
 - Do not refactor or add features beyond what the user asks for.

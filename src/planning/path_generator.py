@@ -21,8 +21,14 @@ def make_function(fx, fy, fz):
     return T
 
 def make_unit_vec(normal):
+    # TODO: a vector with (numerically) zero magnitude has no direction — normalizing
+    # it means dividing by zero. Decide what should happen if `normal` is a zero
+    # vector (or close to it, given floating point) before you divide. Raising a
+    # ValueError with a clear message is consistent with the other guard clauses
+    # in this file.
+    norm_unit = normal / np.linalg.norm(normal)
     norm_vec = [1,0,0]
-    if (1- np.abs(np.dot(normal,norm_vec))) < 1e-6:
+    if (1- np.abs(np.dot(norm_unit,norm_vec))) < 1e-6:
         norm_vec = [0,1,0]
         
     u = np.cross(normal,norm_vec)
@@ -38,9 +44,10 @@ def sample_path(path_fn, n_steps):
     # Call path_fn at n_steps evenly spaced values of t between 0 and 1.
     # Return the results as a list of 4x4 numpy arrays.
     # Hint: numpy has a function that generates evenly spaced values over an interval.
-    # TODO: check that n_steps is at least 1.
-    # Zero or negative steps would produce an empty or nonsensical linspace.
-    # Raise a ValueError with a message stating the minimum.
+
+    if n_steps < 1:
+        raise ValueError(f"n_steps: {n_steps} \n n_steps must be a non negative number greater than zero.")
+
 
     t = np.linspace(0,1,n_steps)
     t_list = []
@@ -49,7 +56,6 @@ def sample_path(path_fn, n_steps):
         t_list.append(path_fn(i))
 
     return t_list
-
 
 # --- Section 2: Spline path (mode 1 — interpolate through user-provided points) ---
 
@@ -121,10 +127,6 @@ def make_circle_path(center, radius, normal, start_angle=0):
     # Hint: to place a circle in an arbitrary plane defined by `normal`, you need two
     # orthogonal vectors that both lie in that plane — look up "basis vectors from normal".
     # Return a callable f(t) -> 4x4 pose matrix with identity orientation.
-    # TODO: this function is not yet implemented.
-    # Raise NotImplementedError with a message so callers get a clear signal rather than None.
-    
-    # raise NotImplementedError("make_circle_path is not yet implemented. This function will generate a circular path based on the provided parameters.")
 
     u_unit, v_unit = make_unit_vec(normal)
     
@@ -134,15 +136,6 @@ def make_circle_path(center, radius, normal, start_angle=0):
         return make_function(p_theta[0],p_theta[1],p_theta[2])
     
     return circle_function
-        
-        
-    
-    
-    
-        
-    
- 
-
 
 def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
     # A spiral that grows in radius and climbs in height over t in [0, 1].
@@ -153,11 +146,7 @@ def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
     # n_turns: how many full revolutions the spiral makes
     # Hint: combine the circle logic with a linearly growing radius and a climbing offset.
     # Return a callable f(t) -> 4x4 pose matrix with identity orientation.
-    # TODO: this function is not yet implemented.
-    # Raise NotImplementedError with a message so callers get a clear signal rather than None.
-    
-    # raise NotImplementedError("make_spiral_path is not yet implemented. This function will generate a spiral path based on the provided parameters.")
-    
+
     u_unit, v_unit = make_unit_vec(normal)
     n_unit = normal / np.linalg.norm(normal)
     
@@ -170,11 +159,6 @@ def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
         return make_function(p_theta[0],p_theta[1],p_theta[2])
     
     return spiral_function 
-        
-    
-    
-    
-
 
 # --- Section 4: Sensor path (mode 3 — stub for future implementation) ---
 
@@ -185,8 +169,5 @@ def make_spiral_path(center, radius_start, radius_end, height, normal, n_turns):
 def make_sensor_path():
     # For now, raise NotImplementedError with a descriptive message.
     # When sensor input is available, this function will accept a sensor handle or callback.
-    # TODO: this function is not yet implemented.
-    # Raise NotImplementedError with a message so callers get a clear signal rather than None.
-    
     raise NotImplementedError("make_sensor_path is not yet implemented. This function will generate a path based on real-time sensor input.")
     pass

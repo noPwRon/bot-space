@@ -5,12 +5,8 @@ import numpy as np
 
 
 def ik_newton_raphson(target_T, theta_init, forward_kin_fn, jacobian_fn, tol=1e-6, max_iter=100):
-    # TODO: check that target_T is a 4×4 matrix.
-    # Passing the wrong shape produces a confusing error deep inside compute_error.
-    # Raise a ValueError stating the expected shape.
-    # TODO: after the loop, check whether convergence was actually reached.
-    # If max_iter was exhausted without the error falling below tol, the returned theta is unreliable.
-    # Raise a RuntimeError (or at minimum warn) so the caller knows the result may be wrong.
+    if(target_T.shape) != (4,4):
+        raise ValueError(f"Matrix Shape: {target_T.shape} \n Expected value is a 4x4 matrix")
     theta = theta_init.copy()
 
     for _ in range(max_iter):
@@ -23,6 +19,8 @@ def ik_newton_raphson(target_T, theta_init, forward_kin_fn, jacobian_fn, tol=1e-
         J = jacobian_fn(theta)
         J_pinv = np.linalg.pinv(J)
         theta = theta + J_pinv @ error
+    else:
+        raise RuntimeError("Maximum iterations reached, theta can not be trusted")
 
     return theta
 
